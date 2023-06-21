@@ -1,0 +1,24 @@
+
+spring:
+  jackson:
+    property-naming-strategy: SNAKE_CASE
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    database: mysql
+    generate-ddl: true
+    database-platform: org.hibernate.dialect.MySQL57Dialect
+    show-sql: true
+
+  datasource:
+    url: ${DB_URL:jdbc:mysql://localhost:3306/facebook?useSSL=false&characterEncoding=UTF-8&serverTimezone=Asia/Seoul&allowPublicKeyRetrieval=true}
+    username: ${DB_USERNAME:root}
+    password: ${DB_PWD:0319}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+jwt:
+  secret-key: ${JWT_SECRET:asasasas}
+  access-exp: ${JWT_ACCESS_EXP:18000000}
+  header: ${JWT_HEADER:Authorization}
+  prefix: ${JWT_PREFIX:Bearer}
