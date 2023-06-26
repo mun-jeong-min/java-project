@@ -1,39 +1,36 @@
 package com.example.javaproject.domain.user.router;
 
-import com.example.javaproject.domain.user.domain.User;
-import com.example.javaproject.domain.user.domain.repository.UserRepository;
 import com.example.javaproject.domain.user.dto.UserRequest;
 import com.example.javaproject.domain.user.dto.UserResponse;
+import com.example.javaproject.domain.user.handler.GetOneUserHandler;
+import com.example.javaproject.domain.user.handler.GetUserListHandler;
+import com.example.javaproject.domain.user.handler.PostUserHandler;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
-import reactor.core.scheduler.Schedulers;
+import reactor.core.publisher.Mono;
 
 @RequiredArgsConstructor
 @RestController
 public class UserRouter {
 
-    private final UserRepository userRepository;
+    private final GetOneUserHandler getOneUserHandler;
+    private final GetUserListHandler getUserListHandler;
+    private final PostUserHandler postUserHandler;
+
+    @GetMapping("/user/{id}")
+    public Mono<UserResponse> get(@PathVariable("id") Long id) {
+        return getOneUserHandler.execute(id);
+    }
 
     @GetMapping(value = "/user", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     public Flux<UserResponse> execute() {
-        return Flux.fromIterable(userRepository.findAll())
-                .map(user -> UserResponse.builder()
-                        .name(user.getNickname())
-                        .password(user.getPassword())
-                        .build()
-                ).subscribeOn(Schedulers.boundedElastic());
+        return getUserListHandler.execute();
     }
 
     @PostMapping("/user")
     public void save(@RequestBody UserRequest request) {
-        userRepository.save(User.builder()
-                        .nickname(request.getNickname())
-                        .password(request.getPassword())
-                .build());
+        postUserHandler.execute(request);
     }
 }
