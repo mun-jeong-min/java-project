@@ -1,5 +1,6 @@
 package com.example.javaproject.domain.user.domain;
 
+import com.example.javaproject.global.entity.BaseEntity;
 import lombok.*;
 
 import javax.persistence.*;
@@ -10,7 +11,7 @@ import javax.persistence.*;
 @Builder
 @Table(name = "tbl_user")
 @Entity
-public class User {
+public class User extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
